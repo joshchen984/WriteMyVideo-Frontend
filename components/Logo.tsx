@@ -1,10 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
-import { useTheme } from '@mui/material/styles';
-import { css, jsx } from '@emotion/react';
+import { Box } from '@mui/material';
+import { css } from '@emotion/react';
 
 const Logo = () => {
-  const theme = useTheme();
   return (
     <Link href="/">
       <a
@@ -12,22 +11,15 @@ const Logo = () => {
           font-size: 2.5rem;
           font-weight: 600;
           display: inline;
+          cursor: pointer;
         `}
       >
-        <span
-          css={css`
-            color: ${theme.palette.primary.main};
-          `}
-        >
+        <Box component="span" sx={{ color: 'primary.main' }}>
           WriteMy
-        </span>
-        <span
-          css={css`
-            color: black;
-          `}
-        >
+        </Box>
+        <Box component="span" sx={{ color: 'black' }}>
           Video
-        </span>
+        </Box>
       </a>
     </Link>
   );

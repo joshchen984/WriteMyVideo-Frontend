@@ -9,7 +9,11 @@ function ElevationScroll({ children }: { children: React.ReactElement }) {
   });
 }
 
-const Navbar = () => {
+type NavbarProps = {
+  isCreateVideo?: boolean;
+  isTutorial?: boolean;
+};
+const Navbar = ({ isCreateVideo = false, isTutorial = false }: NavbarProps) => {
   return (
     <>
       <ElevationScroll>
@@ -25,8 +29,12 @@ const Navbar = () => {
             >
               <Logo />
               <Box>
-                <NavButton>Create Video</NavButton>
-                <NavButton>Tutorial</NavButton>
+                <NavButton active={isCreateVideo} href="/create-video">
+                  Create Video
+                </NavButton>
+                <NavButton active={isTutorial} href="/tutorial">
+                  Tutorial
+                </NavButton>
               </Box>
             </Box>
           </Toolbar>
