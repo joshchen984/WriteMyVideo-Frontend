@@ -5,6 +5,9 @@ const theme = createTheme({
     primary: {
       main: primary,
     },
+    info: {
+      main: '#e5e5e5',
+    },
   },
   typography: {
     fontFamily: "'Poppins', sans-serif",

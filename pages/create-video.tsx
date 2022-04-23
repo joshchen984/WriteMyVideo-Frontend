@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
 import { Box, Typography } from '@mui/material';
+import ScriptInput from '../components/Inputs/ScriptInput';
 
 const CreateVideo: NextPage = () => {
   return (
@@ -33,6 +34,9 @@ const CreateVideo: NextPage = () => {
               <Typography variant="subtitle1">
                 First time using WriteMyVideo? Check out our tutorial!
               </Typography>
+            </Box>
+            <Box>
+              <ScriptInput />
             </Box>
           </Box>
         </Layout>
