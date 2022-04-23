@@ -4,9 +4,12 @@ body {
   margin: 0;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+a { 
+  color: #0000EE;
+}
+
+a:active {
+  color: #0000EE;
 }
 
 *,

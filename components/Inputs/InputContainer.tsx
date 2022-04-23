@@ -13,7 +13,7 @@ const InputContainer = ({ Left, Tips, color }: InputContainerProps) => {
         display: 'flex',
         borderRadius: 10,
         border: '1px solid #A5A5A5',
-        margin: '0 4.5rem',
+        margin: '1rem 4.5rem',
         padding: '1.75rem',
       }}
     >

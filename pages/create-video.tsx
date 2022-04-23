@@ -1,11 +1,20 @@
+import React, { useState } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import Navbar from '../components/Navbar';
 import { Box, Typography } from '@mui/material';
 import ScriptInput from '../components/Inputs/ScriptInput';
+import AudioInput from '../components/Inputs/AudioInput';
 
+export enum AudioOption {
+  Computer = 'COMPUTER',
+  Custom = 'CUSTOM',
+}
 const CreateVideo: NextPage = () => {
+  const [audioOption, setAudioOption] = useState<AudioOption>(
+    AudioOption.Computer
+  );
   return (
     <div>
       <Head>
@@ -37,6 +46,10 @@ const CreateVideo: NextPage = () => {
             </Box>
             <Box>
               <ScriptInput />
+              <AudioInput
+                audioOption={audioOption}
+                setAudioOption={setAudioOption}
+              />
             </Box>
           </Box>
         </Layout>

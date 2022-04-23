@@ -31,7 +31,7 @@ const ScriptInput = () => {
         sx={{
           textTransform: 'none',
           borderRadius: '40px',
-          fontSize: '1.5rem',
+          fontSize: '1.25rem',
         }}
       >
         Upload File
