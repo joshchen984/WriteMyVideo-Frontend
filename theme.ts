@@ -17,11 +17,19 @@ const theme = createTheme({
       textAlign: 'center',
       textTransform: 'uppercase',
     },
+    h2: {
+      color: primary,
+      fontWeight: 'bold',
+      fontSize: '1.75rem',
+    },
     subtitle1: {
       fontSize: '1.5rem',
       fontWeight: '300',
       textTransform: 'uppercase',
       textAlign: 'center',
+    },
+    body1: {
+      lineHeight: '190%',
     },
   },
 });

@@ -34,7 +34,7 @@ const ScriptInput = () => {
           fontSize: '1.25rem',
         }}
       >
-        Upload File
+        Upload Script
         <input type="file" hidden />
       </Button>
     </>
