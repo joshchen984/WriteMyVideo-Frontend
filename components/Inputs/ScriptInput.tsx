@@ -4,7 +4,13 @@ import { Typography, Box, Button } from '@mui/material';
 
 const color = '#336AFF';
 
-const ScriptInput = () => {
+type ScriptInputProps = {
+  setTranscript: (transcript: File | null) => void;
+};
+const ScriptInput = ({ setTranscript }: ScriptInputProps) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setTranscript((event.target as HTMLInputElement).files![0]);
+  };
   const Left = (
     <>
       <Typography sx={{ fontWeight: 'bold', fontSize: '2rem', color }}>
@@ -35,7 +41,7 @@ const ScriptInput = () => {
         }}
       >
         Upload Script
-        <input type="file" hidden />
+        <input type="file" hidden onChange={handleChange} />
       </Button>
     </>
   );

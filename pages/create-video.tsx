@@ -23,6 +23,8 @@ const CreateVideo: NextPage = () => {
   const [imagesOption, setImagesOption] = useState<ImagesOption>(
     ImagesOption.Google
   );
+  const [transcript, setTranscript] = useState<File | null>(null);
+  const [audio, setAudio] = useState<File | null>(null);
   return (
     <>
       <Head>
@@ -54,10 +56,11 @@ const CreateVideo: NextPage = () => {
               </Typography>
             </Box>
             <Box>
-              <ScriptInput />
+              <ScriptInput setTranscript={setTranscript} />
               <AudioInput
                 audioOption={audioOption}
                 setAudioOption={setAudioOption}
+                setAudio={setAudio}
               />
               <UseImagesInput
                 imagesOption={imagesOption}
@@ -70,6 +73,7 @@ const CreateVideo: NextPage = () => {
                 size="large"
                 sx={{
                   borderRadius: '40px',
+                  fontSize: '1.25rem',
                 }}
               >
                 Create My Video

@@ -15,10 +15,18 @@ const color = '#28A164';
 type AudioInputProps = {
   audioOption: AudioOption;
   setAudioOption: (option: AudioOption) => void;
+  setAudio: (audio: File | null) => void;
 };
-const AudioInput = ({ audioOption, setAudioOption }: AudioInputProps) => {
+const AudioInput = ({
+  audioOption,
+  setAudioOption,
+  setAudio,
+}: AudioInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAudioOption((event.target as HTMLInputElement).value as AudioOption);
+  };
+  const handleAudioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAudio((event.target as HTMLInputElement).files![0]);
   };
   let audioButton = null;
   if (audioOption === AudioOption.Custom) {
@@ -34,7 +42,7 @@ const AudioInput = ({ audioOption, setAudioOption }: AudioInputProps) => {
         }}
       >
         Upload File
-        <input type="file" hidden />
+        <input type="file" hidden onChange={handleAudioChange} />
       </Button>
     );
   }
