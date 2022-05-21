@@ -7,6 +7,8 @@ import { Box, Typography, Button } from '@mui/material';
 import ScriptInput from '../components/Inputs/ScriptInput';
 import AudioInput from '../components/Inputs/AudioInput';
 import UseImagesInput from '../components/Inputs/UseImagesInput';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 
 export enum AudioOption {
   Computer = 'COMPUTER',
@@ -16,7 +18,16 @@ export enum ImagesOption {
   Google = 'GOOGLE',
   Custom = 'CUSTOM',
 }
+export enum ImageRights {
+  Any = 'any',
+  LabeledForReuseWithModifications = 'labeled-for-reuse-with-modifications',
+  LabeledForReuse = 'labeled-for-reuse',
+  LabeledForNonCommercialReuseWithModification = 'labeled-for-noncommercial-reuse-with-modification',
+  LabeledForNoCommercialReuse = 'labeled-for-nocommercial-reuse',
+}
+
 const CreateVideo: NextPage = () => {
+  const router = useRouter();
   const [audioOption, setAudioOption] = useState<AudioOption>(
     AudioOption.Computer
   );
@@ -25,6 +36,43 @@ const CreateVideo: NextPage = () => {
   );
   const [transcript, setTranscript] = useState<File | null>(null);
   const [audio, setAudio] = useState<File | null>(null);
+  const [imageRights, setImageRights] = useState<ImageRights>(ImageRights.Any);
+
+  const submitHandler = async () => {
+    const formData = new FormData();
+    formData.append(
+      'use_audio',
+      (audioOption === AudioOption.Custom).toString()
+    );
+    formData.append(
+      'use_images',
+      (imagesOption === ImagesOption.Custom).toString()
+    );
+    formData.append('usage_rights', imageRights);
+    if (transcript !== null) {
+      formData.append('transcript', transcript);
+    }
+    if (audioOption === AudioOption.Custom) {
+      if (audio !== null) {
+        formData.append('audio', audio);
+      } else {
+        //TODO: set up error handling
+      }
+    }
+    const data = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/upload-images`,
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    console.log(data);
+    if (imagesOption === ImagesOption.Custom) {
+      router.push('/upload-images');
+    }
+  };
   return (
     <>
       <Head>
@@ -65,6 +113,8 @@ const CreateVideo: NextPage = () => {
               <UseImagesInput
                 imagesOption={imagesOption}
                 setImagesOption={setImagesOption}
+                imageRights={imageRights}
+                setImageRights={setImageRights}
               />
             </Box>
             <Box>
@@ -75,6 +125,7 @@ const CreateVideo: NextPage = () => {
                   borderRadius: '40px',
                   fontSize: '1.25rem',
                 }}
+                onClick={submitHandler}
               >
                 Create My Video
               </Button>
