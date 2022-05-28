@@ -59,7 +59,7 @@ const CreateVideo: NextPage = () => {
         //TODO: set up error handling
       }
     }
-    const data = await axios.post(
+    const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/upload-images`,
       formData,
       {
@@ -68,9 +68,10 @@ const CreateVideo: NextPage = () => {
         },
       }
     );
-    console.log(data);
     if (imagesOption === ImagesOption.Custom) {
       router.push('/upload-images');
+    } else {
+      router.push(`/show-video/${data}`);
     }
   };
   return (
