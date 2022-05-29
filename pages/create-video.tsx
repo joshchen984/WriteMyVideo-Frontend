@@ -69,7 +69,12 @@ const CreateVideo: NextPage = () => {
       }
     );
     if (imagesOption === ImagesOption.Custom) {
-      router.push('/upload-images');
+      const urlParams = new URLSearchParams({
+        use_audio: (audioOption === AudioOption.Custom).toString(),
+        words: JSON.stringify(data.words),
+        num_images: data.num_images,
+      });
+      router.push(`/upload-images/${data.tmp_name}?${urlParams.toString()}`);
     } else {
       router.push(`/show-video/${data}`);
     }
