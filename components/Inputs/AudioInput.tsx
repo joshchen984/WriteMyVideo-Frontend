@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import InputContainer from './InputContainer';
 import {
   Typography,
@@ -28,22 +28,38 @@ const AudioInput = ({
   const handleAudioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAudio((event.target as HTMLInputElement).files![0]);
   };
+
+  const audioRef = useRef<null | HTMLInputElement>(null);
   let audioButton = null;
   if (audioOption === AudioOption.Custom) {
     audioButton = (
-      <Button
-        variant="contained"
-        component="label"
-        color="info"
-        sx={{
-          textTransform: 'none',
-          borderRadius: '40px',
-          fontSize: '1.25rem',
-        }}
-      >
-        Upload File
-        <input type="file" hidden onChange={handleAudioChange} />
-      </Button>
+      <>
+        <Button
+          variant="contained"
+          component="label"
+          color="info"
+          sx={{
+            textTransform: 'none',
+            borderRadius: '40px',
+            fontSize: '1.25rem',
+          }}
+        >
+          Upload File
+          <input
+            type="file"
+            hidden
+            onChange={handleAudioChange}
+            ref={audioRef}
+          />
+        </Button>
+        <Typography>
+          {audioRef?.current?.files?.length
+            ? audioRef.current.files.length > 0
+              ? audioRef.current.files[0].name
+              : null
+            : null}
+        </Typography>
+      </>
     );
   }
   const Left = (

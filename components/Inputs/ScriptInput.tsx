@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import InputContainer from './InputContainer';
 import { Typography, Box, Button } from '@mui/material';
 
@@ -11,6 +11,7 @@ const ScriptInput = ({ setTranscript }: ScriptInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTranscript((event.target as HTMLInputElement).files![0]);
   };
+  const scriptRef = useRef<null | HTMLInputElement>(null);
   const Left = (
     <>
       <Typography sx={{ fontWeight: 'bold', fontSize: '2rem', color }}>
@@ -41,8 +42,15 @@ const ScriptInput = ({ setTranscript }: ScriptInputProps) => {
         }}
       >
         Upload Script
-        <input type="file" hidden onChange={handleChange} />
+        <input type="file" hidden onChange={handleChange} ref={scriptRef} />
       </Button>
+      <Typography>
+        {scriptRef?.current?.files?.length
+          ? scriptRef.current.files.length > 0
+            ? scriptRef.current.files[0].name
+            : null
+          : null}
+      </Typography>
     </>
   );
   const Tips = (
