@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
+import WordInput from './WordInput';
 
 export type Word = {
   text: string;
@@ -14,35 +15,16 @@ const UploadImagesForm = ({ transcript, inputRefs }: UploadImagesFormProps) => {
   const transcriptHtml = transcript.map((word) => {
     if (word.isImage) {
       imageIdx++;
-      return (
-        <React.Fragment key={`word-${imageIdx}`}>
-          <input
-            type="file"
-            id={`word-${imageIdx}`}
-            name={imageIdx.toString()}
-            hidden
-            ref={inputRefs[imageIdx]}
-          />
-          <label
-            htmlFor={`word-${imageIdx}`}
-            css={{
-              color: 'blue',
-              '&:hover': {
-                textDecoration: 'underline',
-              },
-            }}
-            id={`word-label-${imageIdx}`}
-          >
-            {word.text}
-          </label>
-          <script>
-            {/* listenForUpload('word-{{word[2]}}', 'word-label-{{word[2]}}'); */}
-          </script>{' '}
-        </React.Fragment>
-      );
-    } else {
-      return word.text + ' ';
     }
+    return (
+      <WordInput
+        key={`word-${imageIdx}`}
+        ref={inputRefs[imageIdx]}
+        text={word.text}
+        isImage={word.isImage}
+        imageIdx={imageIdx}
+      />
+    );
   });
 
   return (
