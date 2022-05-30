@@ -23,11 +23,11 @@ const UploadImages = () => {
     : [];
 
   useEffect(() => {
-    if (!loading && (!wordsQuery || !use_audio || !num_images)) {
+    if (!loading && (!wordsQuery || !use_audio || !num_images || !id)) {
       router.push('/404');
     }
     setLoading(false);
-  }, [wordsQuery, use_audio, router, num_images]);
+  }, [wordsQuery, use_audio, router, num_images, id]);
   const inputRefs = useMemo(
     () =>
       Array(num_imgs)
@@ -45,10 +45,8 @@ const UploadImages = () => {
     const formData = new FormData();
     if (id) {
       formData.append('tmp_name', id as string);
-    } else {
-      //TODO: handle error
     }
-    for (let i = 0; i < inputRefs.length; i++) {
+    for (let i = 0; i < num_imgs; i++) {
       if (
         inputRefs[i].current &&
         inputRefs[i].current!.files &&
@@ -59,8 +57,7 @@ const UploadImages = () => {
         //TODO: handle error
       }
     }
-    formData.append('use_audio', 'as');
-    formData.append('usage_rights', '');
+    formData.append('use_audio', use_audio as string);
     const { data } = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/create-video`,
       formData,

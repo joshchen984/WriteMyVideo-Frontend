@@ -75,11 +75,11 @@ const CreateVideo: NextPage = () => {
     if (audioOption === AudioOption.Custom) {
       if (audio !== null) {
         const ext = getFileExtension(audio.name);
-        if (ext === 'wav' || ext === 'mp3') {
+        if (ext === 'mp3') {
           formData.append('audio', audio);
         } else {
           setAudioError(true);
-          setAudioErrorMessage('Audio file must be .wav or .mp3');
+          setAudioErrorMessage('Audio file must be .mp3');
           return;
         }
       } else {
@@ -109,7 +109,8 @@ const CreateVideo: NextPage = () => {
       } else {
         router.push(`/show-video/${data}`);
       }
-    } catch {
+    } catch (e) {
+      console.log(e);
       setSubmitting(false);
     }
   };
@@ -147,10 +148,12 @@ const CreateVideo: NextPage = () => {
             {submitting ? (
               <>
                 <Spinner />
-                <Typography>
-                  We're creating your video now. It could take a few minutes. In
-                  the meantime, please watch this thing spin around.
-                </Typography>
+                {imagesOption === ImagesOption.Google ? (
+                  <Typography>
+                    We're creating your video now. It could take a few minutes.
+                    In the meantime, please watch this thing spin around.
+                  </Typography>
+                ) : null}
               </>
             ) : (
               <>

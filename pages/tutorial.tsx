@@ -80,7 +80,7 @@ const Tutorial: NextPage = () => {
                 You should read the text exactly as written, without the image
                 descriptions-we suggest copying and pasting the script and
                 deleting the image descriptions so you have a clean copy to read
-                from. Save your voice-over as an audio file (.wav or .mp3).
+                from. Save your voice-over as an audio file (.mp3).
                 <br />
                 <br />
                 To easily record your own voiceover, use an online voice

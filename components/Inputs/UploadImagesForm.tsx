@@ -12,14 +12,14 @@ type UploadImagesFormProps = {
 };
 const UploadImagesForm = ({ transcript, inputRefs }: UploadImagesFormProps) => {
   let imageIdx = -1;
-  const transcriptHtml = transcript.map((word) => {
+  const transcriptHtml = transcript.map((word, idx) => {
     if (word.isImage) {
       imageIdx++;
     }
     return (
       <WordInput
-        key={`word-${imageIdx}`}
-        ref={inputRefs[imageIdx]}
+        key={`word-${idx}`}
+        ref={word.isImage ? inputRefs[imageIdx] : undefined}
         text={word.text}
         isImage={word.isImage}
         imageIdx={imageIdx}

@@ -113,7 +113,7 @@ const AudioInput = ({
                 }}
               />
             }
-            label="I will upload my recorded voiceover (.wav or .mp3 file)"
+            label="I will upload my recorded voiceover (.mp3)"
           />
         </RadioGroup>
         <FormHelperText>{audioErrorMessage}</FormHelperText>
