@@ -13,6 +13,7 @@ import axios from 'axios';
 const UploadImages = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const { id, words: wordsQuery, use_audio, num_images } = router.query;
   const num_imgs: number = num_images ? parseFloat(num_images as string) : 0;
   const words: Word[] = wordsQuery
@@ -35,10 +36,6 @@ const UploadImages = () => {
         .map((i) => createRef<HTMLInputElement>()),
     [num_imgs]
   );
-  let scriptHtml = <Spinner />;
-  if (words) {
-    scriptHtml = <UploadImagesForm inputRefs={inputRefs} transcript={words} />;
-  }
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -58,17 +55,47 @@ const UploadImages = () => {
       }
     }
     formData.append('use_audio', use_audio as string);
-    const { data } = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/create-video`,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-    router.push(`/show-video/${data}`);
+    setSubmitting(true);
+    try {
+      const { data } = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/create-video`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      router.push(`/show-video/${data}`);
+    } catch (e) {
+      console.log(e);
+      setSubmitting(false);
+    }
   };
+
+  let formHtml = (
+    <>
+      <Spinner />
+      <Typography>
+        We're creating your video now. It could take a few minutes. In the
+        meantime, please watch this thing spin around.
+      </Typography>
+    </>
+  );
+  if (words && !submitting) {
+    formHtml = (
+      <form
+        onSubmit={submitHandler}
+        css={{ margin: 0, padding: 0, width: '100%' }}
+      >
+        <UploadImagesForm inputRefs={inputRefs} transcript={words} />
+        <Button type="submit" variant="contained">
+          Create My Video
+        </Button>
+      </form>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -103,15 +130,7 @@ const UploadImages = () => {
               </Box>{' '}
               to upload your image files (JPG/PNG/GIF).
             </Typography>
-            <form
-              onSubmit={submitHandler}
-              css={{ margin: 0, padding: 0, width: '100%' }}
-            >
-              {scriptHtml}
-              <Button type="submit" variant="contained">
-                Create My Video
-              </Button>
-            </form>
+            {formHtml}
           </Box>
         </Layout>
       </main>
