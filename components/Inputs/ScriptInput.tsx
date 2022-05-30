@@ -1,15 +1,27 @@
 import React, { useRef } from 'react';
 import InputContainer from './InputContainer';
-import { Typography, Box, Button } from '@mui/material';
+import { Typography, Box, Button, FormHelperText } from '@mui/material';
 
 const color = '#336AFF';
 
 type ScriptInputProps = {
   setTranscript: (transcript: File | null) => void;
+  transcriptErrorMessage: string;
+  transcriptError: boolean;
+  setTranscriptError: (isError: boolean) => void;
+  setTranscriptErrorMessage: (msg: string) => void;
 };
-const ScriptInput = ({ setTranscript }: ScriptInputProps) => {
+const ScriptInput = ({
+  setTranscript,
+  transcriptErrorMessage,
+  transcriptError,
+  setTranscriptError,
+  setTranscriptErrorMessage,
+}: ScriptInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setTranscript((event.target as HTMLInputElement).files![0]);
+    setTranscriptError(false);
+    setTranscriptErrorMessage('');
   };
   const scriptRef = useRef<null | HTMLInputElement>(null);
   const Left = (
@@ -31,6 +43,9 @@ const ScriptInput = ({ setTranscript }: ScriptInputProps) => {
         </Box>{' '}
         file
       </Typography>
+      <FormHelperText error={transcriptError}>
+        {transcriptErrorMessage}
+      </FormHelperText>
       <Button
         variant="contained"
         component="label"

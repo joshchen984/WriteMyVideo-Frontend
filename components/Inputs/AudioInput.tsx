@@ -6,7 +6,9 @@ import {
   Button,
   RadioGroup,
   FormControlLabel,
+  FormControl,
   Radio,
+  FormHelperText,
 } from '@mui/material';
 import { AudioOption } from '../../pages/create-video';
 
@@ -16,17 +18,29 @@ type AudioInputProps = {
   audioOption: AudioOption;
   setAudioOption: (option: AudioOption) => void;
   setAudio: (audio: File | null) => void;
+  audioErrorMessage: string;
+  audioError: boolean;
+  setAudioError: (isError: boolean) => void;
+  setAudioErrorMessage: (msg: string) => void;
 };
 const AudioInput = ({
   audioOption,
   setAudioOption,
   setAudio,
+  audioErrorMessage,
+  audioError,
+  setAudioError,
+  setAudioErrorMessage,
 }: AudioInputProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAudioOption((event.target as HTMLInputElement).value as AudioOption);
+    setAudioError(false);
+    setAudioErrorMessage('');
   };
   const handleAudioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAudio((event.target as HTMLInputElement).files![0]);
+    setAudioError(false);
+    setAudioErrorMessage('');
   };
 
   const audioRef = useRef<null | HTMLInputElement>(null);
@@ -77,30 +91,33 @@ const AudioInput = ({
       >
         Choose a voice over:
       </Typography>
-      <RadioGroup value={audioOption} onChange={handleChange}>
-        <FormControlLabel
-          value={AudioOption.Computer}
-          control={
-            <Radio
-              sx={{
-                color,
-              }}
-            />
-          }
-          label="Use a computer-generated narration"
-        />
-        <FormControlLabel
-          value={AudioOption.Custom}
-          control={
-            <Radio
-              sx={{
-                color,
-              }}
-            />
-          }
-          label="I will upload my recorded voiceover (.wav or .mp3 file)"
-        />
-      </RadioGroup>
+      <FormControl error={audioError} sx={{ display: 'block' }}>
+        <RadioGroup value={audioOption} onChange={handleChange}>
+          <FormControlLabel
+            value={AudioOption.Computer}
+            control={
+              <Radio
+                sx={{
+                  color,
+                }}
+              />
+            }
+            label="Use a computer-generated narration"
+          />
+          <FormControlLabel
+            value={AudioOption.Custom}
+            control={
+              <Radio
+                sx={{
+                  color,
+                }}
+              />
+            }
+            label="I will upload my recorded voiceover (.wav or .mp3 file)"
+          />
+        </RadioGroup>
+        <FormHelperText>{audioErrorMessage}</FormHelperText>
+      </FormControl>
       {audioButton}
     </>
   );
