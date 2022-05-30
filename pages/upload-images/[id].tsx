@@ -2,18 +2,22 @@ import React, { useEffect, useMemo, createRef, useState } from 'react';
 import Head from 'next/head';
 import Layout from '../../components/Layout';
 import Navbar from '../../components/Navbar';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, FormHelperText } from '@mui/material';
 import { useRouter } from 'next/router';
 import Spinner from '../../components/Spinner';
 import UploadImagesForm, {
   Word,
 } from '../../components/Inputs/UploadImagesForm';
 import axios from 'axios';
+import { getFileExtension } from '../../utils';
 
 const UploadImages = () => {
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   const [submitting, setSubmitting] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
+
   const { id, words: wordsQuery, use_audio, num_images } = router.query;
   const num_imgs: number = num_images ? parseFloat(num_images as string) : 0;
   const words: Word[] = wordsQuery
@@ -49,9 +53,20 @@ const UploadImages = () => {
         inputRefs[i].current!.files &&
         inputRefs[i].current!.files!.length > 0
       ) {
-        formData.append(i.toString(), inputRefs[i].current!.files![0]);
+        const ext = getFileExtension(inputRefs[i].current!.files![0].name);
+        if (ext === 'jpg' || ext === 'jpeg' || ext === 'png') {
+          formData.append(i.toString(), inputRefs[i].current!.files![0]);
+        } else {
+          setError(true);
+          setErrorMessage('Image files must be .jpg or .png');
+          return;
+        }
       } else {
-        //TODO: handle error
+        setError(true);
+        setErrorMessage(
+          "You didn't upload an image for each image description"
+        );
+        return;
       }
     }
     formData.append('use_audio', use_audio as string);
@@ -84,15 +99,29 @@ const UploadImages = () => {
   );
   if (words && !submitting) {
     formHtml = (
-      <form
+      <Box
+        component="form"
         onSubmit={submitHandler}
-        css={{ margin: 0, padding: 0, width: '100%' }}
+        sx={{
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+        }}
       >
         <UploadImagesForm inputRefs={inputRefs} transcript={words} />
-        <Button type="submit" variant="contained">
+        <FormHelperText error={error}>{errorMessage}</FormHelperText>
+        <Button
+          type="submit"
+          variant="contained"
+          sx={{
+            borderRadius: '40px',
+            fontSize: '1.25rem',
+          }}
+        >
           Create My Video
         </Button>
-      </form>
+      </Box>
     );
   }
 

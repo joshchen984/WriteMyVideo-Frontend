@@ -57,6 +57,10 @@ const ShowVideo = () => {
               download="video.mp4"
               href={videoLink}
               variant="contained"
+              sx={{
+                borderRadius: '40px',
+                fontSize: '1.25rem',
+              }}
               endIcon={<DownloadIcon />}
             >
               Download Your Video
