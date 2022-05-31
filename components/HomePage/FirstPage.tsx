@@ -2,12 +2,16 @@ import React from 'react';
 import { Box, Typography, Button, Grid } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
-import videoConversionImage from '../../public/video-new.jpg';
+import videoConversionImage from '../../public/video-conversion.jpg';
 
 const FirstPage = () => {
   return (
-    <Box sx={{ height: 'calc(100vh - 138px)' }}>
-      <Grid container sx={{ height: '100%' }} alignItems="center">
+    <Box sx={{ height: 'calc(90vh - 138px)' }}>
+      <Grid
+        container
+        sx={{ height: '100%', paddingBottom: '50vh', paddingTop: '10vh' }}
+        alignItems="center"
+      >
         <Grid
           item
           sx={{

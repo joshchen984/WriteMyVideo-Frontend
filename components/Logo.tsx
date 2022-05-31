@@ -5,13 +5,14 @@ import { css } from '@emotion/react';
 
 const Logo = () => {
   return (
-    <Link href="/">
+    <Link href="/" passHref>
       <a
         css={css`
           font-size: 2.5rem;
           font-weight: 600;
           display: inline;
           cursor: pointer;
+          text-decoration: none;
         `}
       >
         <Box component="span" sx={{ color: 'primary.main' }}>
