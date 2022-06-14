@@ -97,6 +97,7 @@ const CreateVideo: NextPage = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          timeout: parseFloat(process.env.NEXT_PUBLIC_API_TIMEOUT as string),
         }
       );
       if (imagesOption === ImagesOption.Custom) {

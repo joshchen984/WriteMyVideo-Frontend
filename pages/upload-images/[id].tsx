@@ -79,6 +79,7 @@ const UploadImages = () => {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
+          timeout: parseFloat(process.env.NEXT_PUBLIC_API_TIMEOUT as string),
         }
       );
       router.push(`/show-video/${data}`);
