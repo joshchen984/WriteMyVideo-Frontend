@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Head from 'next/head';
 import Layout from '../../components/Layout';
 import Navbar from '../../components/Navbar';
@@ -7,12 +7,54 @@ import { useRouter } from 'next/router';
 import Spinner from '../../components/Spinner';
 import DownloadIcon from '@mui/icons-material/Download';
 
+const fileExists = async (url: string) => {
+  const result = await fetch(url, { method: 'HEAD' });
+  return result.ok;
+};
+
 const ShowVideo = () => {
   const router = useRouter();
   const { id } = router.query;
+  const [videoExists, setVideoExists] = useState<boolean>(false);
+  const [currentTimeout, setCurrentTimeout] = useState<number | undefined>(
+    undefined
+  );
   const videoLink = `${process.env.NEXT_PUBLIC_API_URL}/static/videos/${id}.mp4`;
-  let videoHtml = <Spinner />;
-  if (id) {
+
+  const checkVideoExistsOnInterval = async (url: string, seconds: number) => {
+    const exists: boolean = await fileExists(url);
+    setVideoExists(exists);
+    if (!videoExists) {
+      setCurrentTimeout(
+        window.setTimeout(async function () {
+          await checkVideoExistsOnInterval(url, seconds);
+        }, seconds * 1000)
+      );
+    }
+  };
+
+  useEffect(() => {
+    const startCheckingForVideo = async () => {
+      if (id !== undefined) {
+        await checkVideoExistsOnInterval(videoLink, 10);
+      }
+    };
+    startCheckingForVideo();
+
+    return () => {
+      clearTimeout(currentTimeout);
+    };
+  }, [videoLink]);
+  let videoHtml = (
+    <>
+      <Spinner />
+      <Typography>
+        We&apos;re creating your video now. It could take a few minutes. In the
+        meantime, please watch this thing spin around.
+      </Typography>
+    </>
+  );
+  if (videoExists) {
     videoHtml = (
       <video
         width="960"
