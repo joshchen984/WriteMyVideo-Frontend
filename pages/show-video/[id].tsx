@@ -72,17 +72,30 @@ const ShowVideo = () => {
   );
   if (videoExists) {
     videoHtml = (
-      <video
-        width="960"
-        height="540"
-        controls
-        css={{
-          marginBottom: '1rem',
-        }}
-      >
-        <source src={videoLink} type="video/mp4" />
-        Your browser does not support the video tag
-      </video>
+      <>
+        <video
+          width="960"
+          height="540"
+          controls
+          css={{
+            marginBottom: '1rem',
+          }}
+        >
+          <source src={videoLink} type="video/mp4" />
+          Your browser does not support the video tag
+        </video>
+        <Button
+          onClick={download}
+          variant="contained"
+          sx={{
+            borderRadius: '40px',
+            fontSize: '1.25rem',
+          }}
+          endIcon={<DownloadIcon />}
+        >
+          Download Your Video
+        </Button>
+      </>
     );
   }
 
@@ -110,17 +123,6 @@ const ShowVideo = () => {
               </Box>
             </Typography>
             {videoHtml}
-            <Button
-              onClick={download}
-              variant="contained"
-              sx={{
-                borderRadius: '40px',
-                fontSize: '1.25rem',
-              }}
-              endIcon={<DownloadIcon />}
-            >
-              Download Your Video
-            </Button>
           </Box>
         </Layout>
       </main>
