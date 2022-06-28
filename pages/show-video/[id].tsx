@@ -95,9 +95,9 @@ const ShowVideo = () => {
     <>
       <Spinner />
       <Typography>
-        When the "Download Your Video" button appears, click on it to save your
-        video file. If you wait a few more minutes, you will also be able to
-        play your video on the website.
+        When the &quot;Download Your Video&quot; button appears, click on it to
+        save your video file. If you wait a few more minutes, you will also be
+        able to play your video on the website.
       </Typography>
     </>
   );
