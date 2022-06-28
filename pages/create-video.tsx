@@ -121,7 +121,7 @@ const CreateVideo: NextPage = () => {
     <>
       <Head>
         <title>Create Video | WriteMyVideo</title>
-        <meta name="description" content="" />
+        <meta name="description" content="Create your slideshow video now by uploading your video script." />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar isCreateVideo />

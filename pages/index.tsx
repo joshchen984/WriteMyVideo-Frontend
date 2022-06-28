@@ -11,7 +11,10 @@ const Home: NextPage = () => {
     <div>
       <Head>
         <title>Landing Page | WriteMyVideo</title>
-        <meta name="description" content="" />
+        <meta
+          name="description"
+          content="WriteMyVideo's purpose is to help people create videos quickly and easily by simply typing out the video’s script and a description of images to include in the video."
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Navbar />
