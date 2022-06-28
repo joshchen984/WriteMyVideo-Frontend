@@ -8,6 +8,7 @@ Create the file `.env.local` and put this in it:
 
 ```
 NEXT_PUBLIC_API_URL=http://localhost:3001
+NEXT_PUBLIC_GA_ID=Google analytics id
 ```
 
 To run the development server:

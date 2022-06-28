@@ -10,7 +10,7 @@ import UseImagesInput from '../components/Inputs/UseImagesInput';
 import Spinner from '../components/Spinner';
 import { useRouter } from 'next/router';
 import axios from 'axios';
-import { getFileExtension } from '../utils';
+import { getFileExtension } from '../app/utils';
 
 export enum AudioOption {
   Computer = 'COMPUTER',

@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { useForwardedRef } from '../../hooks';
+import { useForwardedRef } from '../../app/hooks';
 
 type WordInputProps = {
   text: string;

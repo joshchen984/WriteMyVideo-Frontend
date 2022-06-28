@@ -9,7 +9,7 @@ import UploadImagesForm, {
   Word,
 } from '../../components/Inputs/UploadImagesForm';
 import axios from 'axios';
-import { getFileExtension } from '../../utils';
+import { getFileExtension } from '../../app/utils';
 
 const UploadImages = () => {
   const router = useRouter();
