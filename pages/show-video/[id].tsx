@@ -20,10 +20,16 @@ const checkVideoExists = async (id: string | undefined) => {
   return result.data === 'True';
 };
 
+const checkVideoPlayable = async (url: string) => {
+  const result = await fetch(url, { method: 'HEAD' });
+  return result.ok;
+};
+
 const ShowVideo = () => {
   const router = useRouter();
   const { id } = router.query;
   const [videoExists, setVideoExists] = useState<boolean>(false);
+  const [videoPlayable, setVideoPlayable] = useState<boolean>(false);
   const [currentTimeout, setCurrentTimeout] = useState<number | undefined>(
     undefined
   );
@@ -31,6 +37,7 @@ const ShowVideo = () => {
 
   const checkVideoExistsOnInterval = async (seconds: number) => {
     const exists: boolean = await checkVideoExists(id as string | undefined);
+    const playable: boolean = await checkVideoPlayable(videoLink);
     if (!exists) {
       setVideoExists(exists);
       setCurrentTimeout(
@@ -39,12 +46,27 @@ const ShowVideo = () => {
         }, seconds * 1000)
       );
     } else {
-      /* set a timeout before rendering video because video hasn't
-      fully been converted yet when head request succeeds 
+      /* set a timeout before being able to download video because video hasn't
+      fully been converted yet
       */
       setTimeout(function () {
         setVideoExists(exists);
       }, 1000);
+      if (playable) {
+        /* set a timeout before rendering video because video hasn't
+      fully been converted yet when head request succeeds 
+      */
+        setTimeout(function () {
+          setVideoPlayable(playable);
+        }, 1000);
+      } else {
+        setVideoPlayable(playable);
+        setCurrentTimeout(
+          window.setTimeout(async function () {
+            await checkVideoExistsOnInterval(seconds);
+          }, seconds * 1000)
+        );
+      }
     }
   };
 
@@ -62,7 +84,10 @@ const ShowVideo = () => {
   }, [id]);
 
   const download = async () => {
-    const res = await axios.get(videoLink, { responseType: 'blob' });
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_API_URL}/download/${id}`,
+      { responseType: 'blob' }
+    );
     gaEvent('download_video', {});
     fileDownload(res.data, 'video.mp4');
   };
@@ -70,37 +95,41 @@ const ShowVideo = () => {
     <>
       <Spinner />
       <Typography>
-        We&apos;re creating your video now. It could take a few minutes. In the
-        meantime, please watch this thing spin around.
+        When the "Download Your Video" button appears, click on it to save your
+        video file. If you wait a few more minutes, you will also be able to
+        play your video on the website.
       </Typography>
     </>
   );
-  if (videoExists) {
+  if (videoPlayable) {
     videoHtml = (
-      <>
-        <video
-          width="960"
-          height="540"
-          controls
-          css={{
-            marginBottom: '1rem',
-          }}
-        >
-          <source src={videoLink} type="video/mp4" />
-          Your browser does not support the video tag
-        </video>
-        <Button
-          onClick={download}
-          variant="contained"
-          sx={{
-            borderRadius: '40px',
-            fontSize: '1.25rem',
-          }}
-          endIcon={<DownloadIcon />}
-        >
-          Download Your Video
-        </Button>
-      </>
+      <video
+        width="960"
+        height="540"
+        controls
+        css={{
+          marginBottom: '1rem',
+        }}
+      >
+        <source src={videoLink} type="video/mp4" />
+        Your browser does not support the video tag
+      </video>
+    );
+  }
+  let buttonHtml = null;
+  if (videoExists) {
+    buttonHtml = (
+      <Button
+        onClick={download}
+        variant="contained"
+        sx={{
+          borderRadius: '40px',
+          fontSize: '1.25rem',
+        }}
+        endIcon={<DownloadIcon />}
+      >
+        Download Your Video
+      </Button>
     );
   }
 
@@ -128,6 +157,7 @@ const ShowVideo = () => {
               </Box>
             </Typography>
             {videoHtml}
+            {buttonHtml}
           </Box>
         </Layout>
       </main>
