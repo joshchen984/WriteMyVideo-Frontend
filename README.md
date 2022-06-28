@@ -1,6 +1,12 @@
 # WriteMyVideo Frontend
 
-Frontend for WriteMyVideo
+The repository for the backend is [here](https://github.com/joshchen984/WriteMyVideo-Backend).
+
+WriteMyVideo's purpose is to help people create videos quickly and easily by simply typing out the video’s script and a description of images to include in the video.
+
+<kbd>
+<img src="demo.png">
+</kbd>
 
 ## Development
 
@@ -25,3 +31,4 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 - deployed on netlify
 - domain managed on cloudflare
+- Created using Next.js
