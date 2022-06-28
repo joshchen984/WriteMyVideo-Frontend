@@ -11,6 +11,7 @@ import Spinner from '../components/Spinner';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { getFileExtension } from '../app/utils';
+import { gaEvent } from '../app/gtag';
 
 export enum AudioOption {
   Computer = 'COMPUTER',
@@ -107,6 +108,7 @@ const CreateVideo: NextPage = () => {
         });
         router.push(`/upload-images/${data.tmp_name}?${urlParams.toString()}`);
       } else {
+        gaEvent('create_video_download_images', {});
         router.push(`/show-video/${data}`);
       }
     } catch (e) {

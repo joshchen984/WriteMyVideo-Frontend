@@ -10,6 +10,7 @@ import UploadImagesForm, {
 } from '../../components/Inputs/UploadImagesForm';
 import axios from 'axios';
 import { getFileExtension } from '../../app/utils';
+import { gaEvent } from '../../app/gtag';
 
 const UploadImages = () => {
   const router = useRouter();
@@ -81,6 +82,7 @@ const UploadImages = () => {
           },
         }
       );
+      gaEvent('create_video_custom_images', {});
       router.push(`/show-video/${data}`);
     } catch (e) {
       console.log(e);

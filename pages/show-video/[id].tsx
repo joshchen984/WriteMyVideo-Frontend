@@ -6,6 +6,9 @@ import { Box, Typography, Button } from '@mui/material';
 import { useRouter } from 'next/router';
 import Spinner from '../../components/Spinner';
 import DownloadIcon from '@mui/icons-material/Download';
+import { gaEvent } from '../../app/gtag';
+import fileDownload from 'js-file-download';
+import axios from 'axios';
 
 const fileExists = async (url: string) => {
   const result = await fetch(url, { method: 'HEAD' });
@@ -52,6 +55,12 @@ const ShowVideo = () => {
       clearTimeout(currentTimeout);
     };
   }, [videoLink]);
+
+  const download = async () => {
+    const res = await axios.get(videoLink, { responseType: 'blob' });
+    gaEvent('download_video', {});
+    fileDownload(res.data, 'video.mp4');
+  };
   let videoHtml = (
     <>
       <Spinner />
@@ -102,8 +111,7 @@ const ShowVideo = () => {
             </Typography>
             {videoHtml}
             <Button
-              download="video.mp4"
-              href={videoLink}
+              onClick={download}
               variant="contained"
               sx={{
                 borderRadius: '40px',
