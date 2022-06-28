@@ -10,9 +10,14 @@ import { gaEvent } from '../../app/gtag';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 
-const fileExists = async (url: string) => {
-  const result = await fetch(url, { method: 'HEAD' });
-  return result.ok;
+const checkVideoExists = async (id: string | undefined) => {
+  if (id === undefined) {
+    return false;
+  }
+  const result = await axios.get(
+    `${process.env.NEXT_PUBLIC_API_URL}/exists/${id}`
+  );
+  return result.data === 'True';
 };
 
 const ShowVideo = () => {
@@ -24,13 +29,13 @@ const ShowVideo = () => {
   );
   const videoLink = `${process.env.NEXT_PUBLIC_API_URL}/static/videos/${id}.mp4`;
 
-  const checkVideoExistsOnInterval = async (url: string, seconds: number) => {
-    const exists: boolean = await fileExists(url);
+  const checkVideoExistsOnInterval = async (seconds: number) => {
+    const exists: boolean = await checkVideoExists(id as string | undefined);
     if (!exists) {
       setVideoExists(exists);
       setCurrentTimeout(
         window.setTimeout(async function () {
-          await checkVideoExistsOnInterval(url, seconds);
+          await checkVideoExistsOnInterval(seconds);
         }, seconds * 1000)
       );
     } else {
@@ -46,7 +51,7 @@ const ShowVideo = () => {
   useEffect(() => {
     const startCheckingForVideo = async () => {
       if (id !== undefined) {
-        await checkVideoExistsOnInterval(videoLink, 10);
+        await checkVideoExistsOnInterval(10);
       }
     };
     startCheckingForVideo();
@@ -54,7 +59,7 @@ const ShowVideo = () => {
     return () => {
       clearTimeout(currentTimeout);
     };
-  }, [videoLink]);
+  }, [id]);
 
   const download = async () => {
     const res = await axios.get(videoLink, { responseType: 'blob' });
