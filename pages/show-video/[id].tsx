@@ -23,13 +23,20 @@ const ShowVideo = () => {
 
   const checkVideoExistsOnInterval = async (url: string, seconds: number) => {
     const exists: boolean = await fileExists(url);
-    setVideoExists(exists);
-    if (!videoExists) {
+    if (!exists) {
+      setVideoExists(exists);
       setCurrentTimeout(
         window.setTimeout(async function () {
           await checkVideoExistsOnInterval(url, seconds);
         }, seconds * 1000)
       );
+    } else {
+      /* set a timeout before rendering video because video hasn't
+      fully been converted yet when head request succeeds 
+      */
+      setTimeout(function () {
+        setVideoExists(exists);
+      }, 1000);
     }
   };
 
