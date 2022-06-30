@@ -10,17 +10,7 @@ import { gaEvent } from '../../app/gtag';
 import fileDownload from 'js-file-download';
 import axios from 'axios';
 
-const checkVideoExists = async (id: string | undefined) => {
-  if (id === undefined) {
-    return false;
-  }
-  const result = await axios.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/exists/${id}`
-  );
-  return result.data === 'True';
-};
-
-const checkVideoPlayable = async (url: string) => {
+const fileExists = async (url: string) => {
   const result = await fetch(url, { method: 'HEAD' });
   return result.ok;
 };
@@ -29,51 +19,34 @@ const ShowVideo = () => {
   const router = useRouter();
   const { id } = router.query;
   const [videoExists, setVideoExists] = useState<boolean>(false);
-  const [videoPlayable, setVideoPlayable] = useState<boolean>(false);
   const [currentTimeout, setCurrentTimeout] = useState<number | undefined>(
     undefined
   );
   const videoLink = `${process.env.NEXT_PUBLIC_API_URL}/static/videos/${id}.mp4`;
 
-  const checkVideoExistsOnInterval = async (seconds: number) => {
-    const exists: boolean = await checkVideoExists(id as string | undefined);
-    const playable: boolean = await checkVideoPlayable(videoLink);
+  const checkVideoExistsOnInterval = async (url: string, seconds: number) => {
+    const exists: boolean = await fileExists(url);
     if (!exists) {
       setVideoExists(exists);
       setCurrentTimeout(
         window.setTimeout(async function () {
-          await checkVideoExistsOnInterval(seconds);
+          await checkVideoExistsOnInterval(url, seconds);
         }, seconds * 1000)
       );
     } else {
-      /* set a timeout before being able to download video because video hasn't
-      fully been converted yet
+      /* set a timeout before rendering video because video hasn't
+      fully been converted yet when head request succeeds 
       */
       setTimeout(function () {
         setVideoExists(exists);
       }, 1000);
-      if (playable) {
-        /* set a timeout before rendering video because video hasn't
-      fully been converted yet when head request succeeds 
-      */
-        setTimeout(function () {
-          setVideoPlayable(playable);
-        }, 1000);
-      } else {
-        setVideoPlayable(playable);
-        setCurrentTimeout(
-          window.setTimeout(async function () {
-            await checkVideoExistsOnInterval(seconds);
-          }, seconds * 1000)
-        );
-      }
     }
   };
 
   useEffect(() => {
     const startCheckingForVideo = async () => {
       if (id !== undefined) {
-        await checkVideoExistsOnInterval(10);
+        await checkVideoExistsOnInterval(videoLink, 10);
       }
     };
     startCheckingForVideo();
@@ -81,13 +54,10 @@ const ShowVideo = () => {
     return () => {
       clearTimeout(currentTimeout);
     };
-  }, [id]);
+  }, [videoLink]);
 
   const download = async () => {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/download/${id}`,
-      { responseType: 'blob' }
-    );
+    const res = await axios.get(videoLink, { responseType: 'blob' });
     gaEvent('download_video', {});
     fileDownload(res.data, 'video.mp4');
   };
@@ -95,41 +65,37 @@ const ShowVideo = () => {
     <>
       <Spinner />
       <Typography>
-        When the &quot;Download Your Video&quot; button appears, click on it to
-        save your video file. If you wait a few more minutes, you will also be
-        able to play your video on the website.
+        We&apos;re creating your video now. It could take a few minutes. In the
+        meantime, please watch this thing spin around.
       </Typography>
     </>
   );
-  if (videoPlayable) {
-    videoHtml = (
-      <video
-        width="960"
-        height="540"
-        controls
-        css={{
-          marginBottom: '1rem',
-        }}
-      >
-        <source src={videoLink} type="video/mp4" />
-        Your browser does not support the video tag
-      </video>
-    );
-  }
-  let buttonHtml = null;
   if (videoExists) {
-    buttonHtml = (
-      <Button
-        onClick={download}
-        variant="contained"
-        sx={{
-          borderRadius: '40px',
-          fontSize: '1.25rem',
-        }}
-        endIcon={<DownloadIcon />}
-      >
-        Download Your Video
-      </Button>
+    videoHtml = (
+      <>
+        <video
+          width="960"
+          height="540"
+          controls
+          css={{
+            marginBottom: '1rem',
+          }}
+        >
+          <source src={videoLink} type="video/mp4" />
+          Your browser does not support the video tag
+        </video>
+        <Button
+          onClick={download}
+          variant="contained"
+          sx={{
+            borderRadius: '40px',
+            fontSize: '1.25rem',
+          }}
+          endIcon={<DownloadIcon />}
+        >
+          Download Your Video
+        </Button>
+      </>
     );
   }
 
@@ -157,7 +123,6 @@ const ShowVideo = () => {
               </Box>
             </Typography>
             {videoHtml}
-            {buttonHtml}
           </Box>
         </Layout>
       </main>
